@@ -1,46 +1,40 @@
 package com.lun.kafka.producer;
 
+import org.apache.kafka.clients.producer.*;
+
 import java.util.Properties;
 
-import org.apache.kafka.clients.producer.Callback;
-import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.Producer;
-import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.clients.producer.RecordMetadata;
-
+/**
+ * 带回调函数的生产者
+ *
+ * @author tao
+ */
 public class CallBackProducer {
-	public static void main(String[] args) {
-		Properties props = new Properties();
-		props.put("bootstrap.servers", "127.0.0.1:9092");//kafka 集群， broker-list
-		props.put("acks", "all");
-		props.put("retries", 1);//重试次数
-		props.put("batch.size", 16384);//批次大小
-		props.put("linger.ms", 1);//等待时间
-		props.put("buffer.memory", 33554432);//RecordAccumulator 缓冲区大小
-		props.put("key.serializer",
-		"org.apache.kafka.common.serialization.StringSerializer");
-		props.put("value.serializer",
-		"org.apache.kafka.common.serialization.StringSerializer");
-		
-//		props.put(ProducerConfig.PARTITIONER_CLASS_CONFIG, MyPartitioner.class);
-		
-		Producer<String, String> producer = new KafkaProducer<>(props);
-		for (int i = 0; i < 100; i++) {
-			producer.send(new ProducerRecord<String, String>("test",  "test - 1"), new Callback() {
-			
-				//回调函数， 该方法会在 Producer 收到 ack 时调用，为异步调用
-				@Override
-				public void onCompletion(RecordMetadata metadata, Exception exception) {
-					if (exception == null) {
-						System.out.println(metadata.partition() + " - " + metadata.offset());
-					} else {
-						exception.printStackTrace();
-					}
-				}
-			});
-		}
-		
-		producer.close();
-	}
+    public static void main(String[] args) {
+        //1.定义配置信息
+        Properties props = new Properties();
+        //kafka集群，broker-list
+        props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "127.0.0.1:9092");
+        props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
+        props.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer");
+
+        //2.创建生产者对象
+        Producer<String, String> producer = new KafkaProducer<>(props);
+
+        //3.发送数据
+        for (int i = 0; i < 10; i++) {
+            //回调函数，该方法会在Producer收到ack时调用，为异步调用
+            producer.send(new ProducerRecord<>("first", "test-" + i),
+                    (metadata, exception) -> {
+                        if (exception == null) {
+                            System.out.println(metadata.partition() + "-" + metadata.offset());
+                        } else {
+                            exception.printStackTrace();
+                        }
+                    });
+        }
+
+        //4.关闭资源
+        producer.close();
+    }
 }
