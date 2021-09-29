@@ -1,4 +1,4 @@
-package com.lun.kafka.consumer;
+package com.tao.kafka.consumer;
 
 import org.apache.kafka.clients.consumer.*;
 import org.apache.kafka.common.TopicPartition;

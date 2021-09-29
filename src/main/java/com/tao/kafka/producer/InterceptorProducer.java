@@ -1,4 +1,4 @@
-package com.lun.kafka.producer;
+package com.tao.kafka.producer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +26,8 @@ public class InterceptorProducer {
 		
 		// 2 构建拦截链
 		List<String> interceptors = new ArrayList<>();
-		interceptors.add("com.lun.kafka.interceptor.TimeInterceptor");
-		interceptors.add("com.lun.kafka.interceptor.CounterInterceptor");
+		interceptors.add("TimeInterceptor");
+		interceptors.add("CounterInterceptor");
 		
 		props.put(ProducerConfig.INTERCEPTOR_CLASSES_CONFIG, interceptors);
 		

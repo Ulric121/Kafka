@@ -1,4 +1,4 @@
-package com.lun.kafka.consumer;
+package com.tao.kafka.consumer;
 
 import java.util.Arrays;
 import java.util.Properties;

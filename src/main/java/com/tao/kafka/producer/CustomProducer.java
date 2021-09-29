@@ -1,4 +1,4 @@
-package com.lun.kafka.producer;
+package com.tao.kafka.producer;
 
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
